@@ -73,7 +73,7 @@ def enrich(challenge: models.Challenge) -> dict:
         "pct": pct,
         "streak": calc_streak(days),
         "today_day": today_day,
-        "future": today,
+        "today": future,
     }
 
 
