@@ -57,6 +57,9 @@ def enrich(challenge: models.Challenge) -> dict:
     pct   = round(done / challenge.total_days * 100) if challenge.total_days else 0
     today = datetime.date.today()
 
+    now = datetime.datetime.now()
+    future = now + datetime.timedelta(hours=3)
+
     # find today's day entry
     today_day = next(
         (d for d in days if d.date == today), None
@@ -70,7 +73,7 @@ def enrich(challenge: models.Challenge) -> dict:
         "pct": pct,
         "streak": calc_streak(days),
         "today_day": today_day,
-        "today": today,
+        "future": today,
     }
 
 
