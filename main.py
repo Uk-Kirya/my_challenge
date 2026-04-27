@@ -38,9 +38,10 @@ def calc_streak(days: list) -> int:
         key=lambda d: d.date,
         reverse=True
     )
-    today = datetime.date.today()
+    now = datetime.datetime.now()
+    future = now + datetime.timedelta(hours=3)
     streak = 0
-    expected = today
+    expected = future.date()
     for d in sorted_days:
         if d.date == expected:
             streak += 1
