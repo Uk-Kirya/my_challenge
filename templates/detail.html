@@ -137,7 +137,6 @@
     {% set today_date = today_day.date if today_day else None %}
     {% for day in days %}
     <form method="post" action="/toggle/{{ day.id }}" style="display:contents;">
-      {{ today }}
       {% if day.date == today %}
         <button type="submit"
                 class="day-cell {% if day.is_done %}done{% endif %} {% if day.date == today_date %}today{% endif %}"

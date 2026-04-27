@@ -62,7 +62,7 @@ def enrich(challenge: models.Challenge) -> dict:
 
     # find today's day entry
     today_day = next(
-        (d for d in days if d.date == today), None
+        (d for d in days if d.date == future.date()), None
     )
 
     return {
