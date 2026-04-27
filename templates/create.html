@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+
+    <div class="fade-up">
+      <span class="badge-brand mb-3 d-inline-block">Новый челлендж</span>
+      <h1 class="display-font" style="font-size:3.5rem;line-height:1;">Создай свой<br>Челлендж</h1>
+      <p style="color:var(--text-muted);margin-bottom:2.5rem;">
+        Определи свою цель, установи сроки, распредели их по дням.
+      </p>
+    </div>
+
+    <form method="post" action="/create" class="fade-up fade-up-1">
+      <div class="card p-4 p-lg-5">
+
+        <!-- title -->
+        <div class="mb-4">
+          <label class="form-label">Заголовок *</label>
+          <input type="text" name="title" class="form-control"
+                 placeholder="Название челленджа" required>
+        </div>
+
+        <!-- description -->
+        <div class="mb-4">
+          <label class="form-label">Описание / Задачи</label>
+          <textarea name="description" class="form-control" rows="3"
+                    placeholder="Выполнить ... / Список задач"></textarea>
+        </div>
+
+        <!-- days + start -->
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <label class="form-label">Всего дней</label>
+            <input type="number" name="total_days" class="form-control"
+                   value="365" min="1" max="3650" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Дата старта</label>
+            <input type="date" name="start_date" class="form-control"
+                   value="{{ today }}" required>
+          </div>
+        </div>
+
+        <!-- time window -->
+        <div class="mb-4">
+          <label class="form-label">Время выполнения</label>
+          <div class="row g-3">
+            <div class="col-6">
+              <input type="time" name="time_from" class="form-control" value="06:00">
+            </div>
+            <div class="col-6">
+              <input type="time" name="time_to" class="form-control" value="07:00">
+            </div>
+          </div>
+          <div class="mt-1" style="font-size:.77rem;color:var(--text-muted);">
+            От &nbsp;&bull;&nbsp; До
+          </div>
+        </div>
+
+        <!-- submit -->
+        <button type="submit" class="btn btn-brand w-100 py-3 mt-2"
+                style="font-size:1.1rem;letter-spacing:.05em;">
+          <i class="bi bi-lightning-charge-fill me-2"></i>
+          Запустить челлендж
+        </button>
+
+      </div>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

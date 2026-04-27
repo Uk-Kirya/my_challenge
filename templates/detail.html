@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- back -->
+<a href="/" class="text-decoration-none mb-4 d-inline-flex align-items-center gap-2"
+   style="color:var(--text-muted);font-size:.85rem;">
+  <i class="bi bi-arrow-left"></i> Все челленджи
+</a>
+
+<!-- hero header -->
+<div class="fade-up mb-5">
+  <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+    <span class="badge-brand">{{ challenge.total_days }} дней</span>
+    {% if streak > 0 %}
+    <span class="streak-badge"><i class="bi bi-fire"></i> {{ streak }}-дней подряд</span>
+    {% endif %}
+    {% if pct == 100 %}
+    <span class="badge-brand" style="background:rgba(255,215,0,.15);border-color:gold;color:gold;">
+      ВЫПОЛНЕНО
+    </span>
+    {% endif %}
+  </div>
+
+  <h1 class="display-font" style="font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.05;">
+    {{ challenge.title }}
+  </h1>
+  {% if challenge.description %}
+  <p style="color:var(--text-muted);font-size:1rem;max-width:600px;">{{ challenge.description }}</p>
+  {% endif %}
+
+  <div style="font-size:.85rem;color:var(--text-muted);" class="mt-2">
+    <i class="bi bi-clock me-1"></i> {{ challenge.time_from }} &ndash; {{ challenge.time_to }}
+    &emsp;
+    <i class="bi bi-calendar3 me-1"></i> {{ challenge.start_date }}
+  </div>
+</div>
+
+<!-- ─── STATS ─── -->
+<div class="row g-3 mb-5 fade-up fade-up-1">
+  <div class="col-6 col-md-3">
+    <div class="stat-box">
+      <div class="number">{{ done }}</div>
+      <div class="label">Выполнено</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-box">
+      <div class="number">{{ left }}</div>
+      <div class="label">Осталось</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-box">
+      <div class="number">{{ streak }}</div>
+      <div class="label">Дней подряд</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-box">
+      <div class="number">{{ pct }}%</div>
+      <div class="label">Прогресс</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PROGRESS BAR ─── -->
+<div class="card p-4 mb-5 fade-up fade-up-2">
+  <div class="d-flex justify-content-between mb-2" style="font-size:.85rem;">
+    <span style="color:var(--text-muted);">Прогресс прохождения</span>
+    <span style="color:var(--brand);font-weight:700;">{{ done }} / {{ challenge.total_days }}</span>
+  </div>
+  <div class="progress" style="height:14px;">
+    <div class="progress-bar-brand"
+         style="width:{{ pct }}%"
+         role="progressbar">
+    </div>
+  </div>
+  <div class="d-flex justify-content-between mt-2" style="font-size:.72rem;color:var(--text-muted);">
+    <span>Старт</span>
+    <span>{{ pct }}% выполнено</span>
+    <span>Финиш</span>
+  </div>
+</div>
+
+<!-- ─── TODAY CHECK-IN ─── -->
+{% if today_day %}
+<div class="card p-4 mb-5 fade-up fade-up-2"
+     style="border-color:{% if today_day.is_done %}var(--brand){% else %}rgba(255,255,255,.15){% endif %};">
+  <div class="section-title">Сегодня — День {{ today_day.day_number }}</div>
+
+  {% if today_day.is_done %}
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--brand-glow);
+                  border:2px solid var(--brand);display:flex;align-items:center;
+                  justify-content:center;font-size:1.4rem;color:var(--brand);">
+        <i class="bi bi-check-lg"></i>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--brand);">Выполнено!</div>
+        <div style="font-size:.8rem;color:var(--text-muted);">
+          {% if today_day.completed_at %}
+            в {{ today_day.completed_at.strftime('%H:%M') }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <p style="color:var(--text-muted);" class="mb-3">
+      Время выполнения: <strong style="color:#dde3ef;">{{ challenge.time_from }} &ndash; {{ challenge.time_to }}</strong>
+      &mdash; Когда вы завершите свою задачу, отметьте сегодняшний день как выполненный.
+    </p>
+  {% endif %}
+
+  <form method="post" action="/toggle/{{ today_day.id }}">
+    <button type="submit"
+            class="btn {% if today_day.is_done %}btn-outline-secondary{% else %}btn-brand{% endif %} px-4">
+      {% if today_day.is_done %}
+        <i class="bi bi-x-circle me-1"></i> Снять отметку
+      {% else %}
+        <i class="bi bi-check-circle me-1"></i> Выполнено!
+      {% endif %}
+    </button>
+  </form>
+</div>
+{% endif %}
+
+<!-- ─── FULL DAY GRID ─── -->
+<div class="card p-4 fade-up fade-up-3">
+  <div class="section-title">
+    Всего {{ challenge.total_days }} Дней
+    <span style="float:right;font-size:.75rem;color:var(--text-muted);">
+      Щелкните по дню, чтобы переключиться
+    </span>
+  </div>
+
+  <div class="day-grid" id="dayGrid">
+    {% set today_date = today_day.date if today_day else None %}
+    {% for day in days %}
+    <form method="post" action="/toggle/{{ day.id }}" style="display:contents;">
+      {% if day.date == today %}
+        <button type="submit"
+                class="day-cell {% if day.is_done %}done{% endif %} {% if day.date == today_date %}today{% endif %}"
+                title="День {{ day.day_number }} — {{ day.date }}{% if day.is_done %} (done){% endif %}"
+                style="cursor:pointer;background:none;padding:0;border:none;
+                       {% if day.is_done %}background:var(--brand-glow);border:1px solid var(--brand);color:var(--brand);{% else %}background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);{% endif %}
+                       {% if day.date == today_date %}border-color:{% if day.is_done %}var(--brand){% else %}#fff{% endif %}!important;{% endif %}
+                       border-radius:8px;aspect-ratio:1;display:flex;align-items:center;
+                       justify-content:center;font-size:.7rem;font-weight:600;
+                       transition:transform .15s,box-shadow .15s;">
+          {% if day.is_done %}
+            <i class="bi bi-check2" style="font-size:.9rem;"></i>
+          {% else %}
+            {{ day.day_number }}
+          {% endif %}
+        </button>
+      {% else %}
+        <span
+                class="day-cell {% if day.is_done %}done{% endif %} {% if day.date == today_date %}today{% endif %}"
+                title="День {{ day.day_number }} — {{ day.date }}{% if day.is_done %} (done){% endif %}"
+                style="cursor:pointer;background:none;padding:0;border:none;
+                       {% if day.is_done %}background:var(--brand-glow);border:1px solid var(--brand);color:var(--brand);{% else %}background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);{% endif %}
+                       {% if day.date == today_date %}border-color:{% if day.is_done %}var(--brand){% else %}#fff{% endif %}!important;{% endif %}
+                       border-radius:8px;aspect-ratio:1;display:flex;align-items:center;
+                       justify-content:center;font-size:.7rem;font-weight:600;
+                       transition:transform .15s,box-shadow .15s;">
+          {% if day.is_done %}
+            <i class="bi bi-check2" style="font-size:.9rem;"></i>
+          {% else %}
+            {{ day.day_number }}
+          {% endif %}
+        </span>
+      {% endif %}
+    </form>
+    {% endfor %}
+  </div>
+
+  <!-- legend -->
+  <div class="d-flex gap-4 mt-4" style="font-size:.78rem;color:var(--text-muted);">
+    <span>
+      <span style="display:inline-block;width:12px;height:12px;border-radius:3px;
+                   background:var(--brand-glow);border:1px solid var(--brand);margin-right:5px;"></span>
+      Выполнено
+    </span>
+    <span>
+      <span style="display:inline-block;width:12px;height:12px;border-radius:3px;
+                   background:var(--surface-2);border:1px solid rgba(255,255,255,.25);margin-right:5px;"></span>
+      В процессе
+    </span>
+    <span>
+      <span style="display:inline-block;width:12px;height:12px;border-radius:3px;
+                   background:var(--surface-2);border:1px solid #fff;margin-right:5px;"></span>
+      Сегодня
+    </span>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+services:
+  fastapi:
+    build: .
+    container_name: challenge
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    ports:
+      - "${FASTAPI_EXTERNAL_PORT}:8000"
+    restart: always

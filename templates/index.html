@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if items %}
+
+  <div class="row g-4">
+    {% for item in items %}
+    {% set c = item.challenge %}
+    <div class="col-12 col-lg-6 fade-up" style="animation-delay: {{ loop.index0 * 0.08 }}s">
+      <div class="card p-4 h-100">
+
+        <!-- header -->
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <span class="badge-brand mb-2 d-inline-block">{{ c.total_days }} дней</span>
+            <h3 class="mb-0" style="font-size:1.6rem;">{{ c.title }}</h3>
+            {% if c.description %}
+            <p class="mt-1 mb-0" style="font-size:.85rem;color:var(--text-muted);">{{ c.description }}</p>
+            {% endif %}
+          </div>
+          {% if item.streak > 0 %}
+          <span class="streak-badge flex-shrink-0 ms-3">
+            <i class="bi bi-fire"></i> {{ item.streak }} дней подряд
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- time window -->
+        <div class="mb-3" style="font-size:.82rem;color:var(--text-muted);">
+          <i class="bi bi-clock me-1"></i>
+          {{ c.time_from }} &ndash; {{ c.time_to }}
+          &nbsp;&nbsp;
+          <i class="bi bi-calendar3 me-1"></i>
+          Старт: {{ c.start_date }}
+        </div>
+
+        <!-- stats row -->
+        <div class="row g-2 mb-3">
+          <div class="col-4">
+            <div class="stat-box">
+              <div class="number">{{ item.done }}</div>
+              <div class="label">Выполнено</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-box">
+              <div class="number">{{ item.left }}</div>
+              <div class="label">Осталось</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-box">
+              <div class="number">{{ item.pct }}%</div>
+              <div class="label">Прогресс</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- progress bar -->
+        <div class="mb-4">
+          <div class="progress" style="height:10px;">
+            <div class="progress-bar-brand"
+                 style="width:{{ item.pct }}%"
+                 role="progressbar"
+                 aria-valuenow="{{ item.pct }}"
+                 aria-valuemin="0" aria-valuemax="100">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-1"
+               style="font-size:.72rem;color:var(--text-muted);">
+            <span>День 1</span>
+            <span>День {{ c.total_days }}</span>
+          </div>
+        </div>
+
+        <!-- mini day grid (first 30) -->
+        <div class="day-grid mb-4">
+          {% for day in item.days[:30] %}
+          <div class="day-cell {% if day.is_done %}done{% endif %} {% if day.date == today %}today{% endif %}"
+               title="Day {{ day.day_number }} - {{ day.date }}">
+            {{ day.day_number }}
+          </div>
+          {% endfor %}
+          {% if item.days|length > 30 %}
+          <div class="day-cell" style="background:none;border:none;color:var(--text-muted);font-size:.65rem;">
+            +{{ item.days|length - 30 }}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- actions -->
+        <div class="d-flex gap-2 mt-auto">
+          <a href="/challenge/{{ c.id }}" class="btn btn-brand flex-grow-1">
+            Открыть челлендж
+          </a>
+          <form method="post" action="/delete/{{ c.id }}"
+                onsubmit="return confirm('Удалить этот челлендж?')">
+            <button class="btn btn-outline-danger" type="submit"
+                    style="border-radius:10px;">
+              <i class="bi bi-trash"></i>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <div class="empty-state fade-up">
+    <div class="icon"><i class="bi bi-trophy"></i></div>
+    <h2 class="display-font" style="font-size:3rem;">Нет челленджей</h2>
+    <p style="color:var(--text-muted);max-width:360px;margin:1rem auto 2rem;">
+      Приступайте к выполнению своего первого задания и следите за своим прогрессом каждый день.
+    </p>
+    <a href="/create" class="btn btn-brand px-5 py-3" style="font-size:1.1rem;">
+      <i class="bi bi-plus-circle me-2"></i> Создайте первый челлендж
+    </a>
+  </div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // expose today for template
+  const today = new Date().toISOString().split('T')[0];
+</script>
+{% endblock %}
