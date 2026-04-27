@@ -16,7 +16,7 @@
     {% endif %}
     {% if pct == 100 %}
     <span class="badge-brand" style="background:rgba(255,215,0,.15);border-color:gold;color:gold;">
-      ВЫПОЛНЕНО
+      ПРОЙДЕНО
     </span>
     {% endif %}
   </div>
@@ -40,7 +40,7 @@
   <div class="col-6 col-md-3">
     <div class="stat-box">
       <div class="number">{{ done }}</div>
-      <div class="label">Выполнено</div>
+      <div class="label">Пройдено</div>
     </div>
   </div>
   <div class="col-6 col-md-3">
@@ -77,7 +77,7 @@
   </div>
   <div class="d-flex justify-content-between mt-2" style="font-size:.72rem;color:var(--text-muted);">
     <span>Старт</span>
-    <span>{{ pct }}% выполнено</span>
+    <span>{{ pct }}% пройдено</span>
     <span>Финиш</span>
   </div>
 </div>
@@ -117,7 +117,7 @@
       {% if today_day.is_done %}
         <i class="bi bi-x-circle me-1"></i> Снять отметку
       {% else %}
-        <i class="bi bi-check-circle me-1"></i> Выполнено!
+        <i class="bi bi-check-circle me-1"></i> Пройдено!
       {% endif %}
     </button>
   </form>
@@ -179,7 +179,7 @@
     <span>
       <span style="display:inline-block;width:12px;height:12px;border-radius:3px;
                    background:var(--brand-glow);border:1px solid var(--brand);margin-right:5px;"></span>
-      Выполнено
+      Пройдено
     </span>
     <span>
       <span style="display:inline-block;width:12px;height:12px;border-radius:3px;
