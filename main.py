@@ -38,10 +38,9 @@ def calc_streak(days: list) -> int:
         key=lambda d: d.date,
         reverse=True
     )
-    now = datetime.datetime.now()
-    future = now + datetime.timedelta(hours=3)
+    now = datetime.datetime.now() + datetime.timedelta(hours=3)
     streak = 0
-    expected = future.date()
+    expected = now.date()
     for d in sorted_days:
         if d.date == expected:
             streak += 1
@@ -58,12 +57,11 @@ def enrich(challenge: models.Challenge) -> dict:
     pct   = round(done / challenge.total_days * 100) if challenge.total_days else 0
     today = datetime.date.today()
 
-    now = datetime.datetime.now()
-    future = now + datetime.timedelta(hours=3)
+    now = datetime.datetime.now() + datetime.timedelta(hours=3)
 
     # find today's day entry
     today_day = next(
-        (d for d in days if d.date == future.date()), None
+        (d for d in days if d.date == now.date()), None
     )
 
     return {
@@ -74,7 +72,7 @@ def enrich(challenge: models.Challenge) -> dict:
         "pct": pct,
         "streak": calc_streak(days),
         "today_day": today_day,
-        "today": future.date(),
+        "today": now.date(),
     }
 
 
@@ -165,7 +163,10 @@ def toggle_day(
         raise HTTPException(status_code=404, detail="Day not found")
 
     day.is_done = not day.is_done
-    day.completed_at = datetime.datetime.now() if day.is_done else None
+
+    now = datetime.datetime.now() + datetime.timedelta(hours=3)
+
+    day.completed_at = now.date() if day.is_done else None
     db.commit()
     return RedirectResponse(
         f"/challenge/{day.challenge_id}", status_code=302
