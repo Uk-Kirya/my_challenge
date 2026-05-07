@@ -154,7 +154,7 @@
           {% endif %}
         </button>
       {% else %}
-        <button type="submit"
+        <span
                 class="day-cell {% if day.is_done %}done{% endif %} {% if day.date == today_date %}today{% endif %}"
                 title="День {{ day.day_number }} — {{ day.date }}{% if day.is_done %} (done){% endif %}"
                 style="cursor:pointer;background:none;padding:0;border:none;
@@ -168,7 +168,7 @@
           {% else %}
             {{ day.day_number }}
           {% endif %}
-        </button>
+        </span>
       {% endif %}
     </form>
     {% endfor %}
