@@ -154,7 +154,18 @@
           {% endif %}
         </button>
       {% else %}
+      <!--
         <span
+                class="day-cell {% if day.is_done %}done{% endif %} {% if day.date == today_date %}today{% endif %}"
+                title="День {{ day.day_number }} — {{ day.date }}{% if day.is_done %} (done){% endif %}"
+                style="cursor:pointer;background:none;padding:0;border:none;
+                       {% if day.is_done %}background:var(--brand-glow);border:1px solid var(--brand);color:var(--brand);{% else %}background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);{% endif %}
+                       {% if day.date == today_date %}border-color:{% if day.is_done %}var(--brand){% else %}#fff{% endif %}!important;{% endif %}
+                       border-radius:8px;aspect-ratio:1;display:flex;align-items:center;
+                       justify-content:center;font-size:.7rem;font-weight:600;
+                       transition:transform .15s,box-shadow .15s;">-->
+
+      <button type="submit"
                 class="day-cell {% if day.is_done %}done{% endif %} {% if day.date == today_date %}today{% endif %}"
                 title="День {{ day.day_number }} — {{ day.date }}{% if day.is_done %} (done){% endif %}"
                 style="cursor:pointer;background:none;padding:0;border:none;
